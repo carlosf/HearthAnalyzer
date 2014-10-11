@@ -131,9 +131,7 @@ namespace HearthAnalyzer.Core
         /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
         /// <param name="cardEffect">The card effect to use</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
-        /// <param name="forceSummoned">Whether or not this minion was force summoned. This means no battlecry</param>
-        /// <param name="fromDeck">Whether or not it's from the player's deck, used in conjunction with forceSummoned</param>
-        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, bool fromDeck = false)
+        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE)
         {
             // Is it even our turn to play?
             var gameState = GameEngine.GameState;
@@ -143,16 +141,7 @@ namespace HearthAnalyzer.Core
             }
 
             // Check if it exists in the player's hand
-            BaseCard cardInHand;
-            if (forceSummoned && fromDeck)
-            {
-                // It was force summoned from the player's deck so check if it was there
-                cardInHand = this.Deck.Cards.FirstOrDefault(c => c.Equals(card));
-            }
-            else
-            {
-                cardInHand = this.Hand.FirstOrDefault(c => c.Equals(card));    
-            }
+            BaseCard cardInHand = this.Hand.FirstOrDefault(c => c.Equals(card));    
             
             if (cardInHand == null)
             {
@@ -160,7 +149,7 @@ namespace HearthAnalyzer.Core
             }
 
             // Check if we have enough mana to make the play
-            if (!forceSummoned && this.Mana < cardInHand.CurrentManaCost)
+            if (this.Mana < cardInHand.CurrentManaCost)
             {
                 throw new InvalidOperationException(string.Format("Not enough mana {0} to play that card {1}!", this.Mana, card.CurrentManaCost));
             }
@@ -168,7 +157,7 @@ namespace HearthAnalyzer.Core
             var minionCard = cardInHand as BaseMinion;
             if (minionCard != null)
             {
-                this.PlayMinion(minionCard, subTarget, gameboardPos, cardEffect, forceSummoned);
+                this.PlayMinion(minionCard, subTarget, gameboardPos, cardEffect);
             }
 
             var spellCard = cardInHand as BaseSpell;
@@ -203,10 +192,24 @@ namespace HearthAnalyzer.Core
         /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
         /// <param name="cardEffect">The card effect to use</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card</param>
-        /// <param name="forceSummoned">Whether or not this card was force summoned. This means no battle cry</param>
-        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false)
+        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE)
+        {
+            this.SummonMinion(minion, subTarget, gameboardPos, cardEffect, forceSummoned: false, cardSource: this.hand);
+        }
+
+        public void SummonMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, ICollection<BaseCard> cardSource = null)
         {
             var gameState = GameEngine.GameState;
+
+            if (cardSource != null)
+            {
+                if (!cardSource.Contains(minion))
+                {
+                    throw new InvalidOperationException(string.Format("Card source doesn't contain {0}", minion));
+                }
+
+                cardSource.Remove(minion);
+            }
 
             // Check if there are too many minions on the board
             var playZone = gameState.CurrentPlayerPlayZone;
@@ -221,9 +224,12 @@ namespace HearthAnalyzer.Core
             {
                 for (int i = playZone.Count - 1; i > gameboardPos; i--)
                 {
-                    playZone[i] = playZone[i-1];
+                    playZone[i] = playZone[i - 1];
                 }
             }
+
+            // Place the minion on the board
+            playZone[gameboardPos] = minion;
 
             // Set the time the card was played
             minion.TimePlayed = DateTime.Now;
@@ -236,14 +242,11 @@ namespace HearthAnalyzer.Core
 
             minion.ResetAttacksThisTurn();
 
-            // Place the minion on the board
-            playZone[gameboardPos] = minion;
-
-            // Remove it from the player's hand
-            this.hand.Remove(minion);
-
             // Remove mana from the player
-            this.Mana -= minion.CurrentManaCost;
+            if (!forceSummoned)
+            {
+                this.Mana -= minion.CurrentManaCost;
+            }
 
             // Call the card's card effect
             var multiCard = minion as IMultiCardEffectMinion;
@@ -271,7 +274,7 @@ namespace HearthAnalyzer.Core
                 var battlecryCard = minion as IBattlecry;
                 if (battlecryCard != null)
                 {
-                    if (subTarget is BaseMinion && ((BaseMinion) subTarget).IsStealthed)
+                    if (subTarget is BaseMinion && ((BaseMinion)subTarget).IsStealthed)
                     {
                         throw new InvalidOperationException("Can't target stealthed minions");
                     }

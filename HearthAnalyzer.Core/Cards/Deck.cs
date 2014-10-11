@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace HearthAnalyzer.Core.Cards
     /// </summary>
     public class Deck
     {
-        internal int topDeckIndex;
+        internal int TopDeckIndex { get { return this.Cards.Count - 1; } }
         internal int fatigueDamage;
 
         public List<BaseCard> Cards;
@@ -25,7 +26,6 @@ namespace HearthAnalyzer.Core.Cards
         public Deck()
         {
             this.Cards = new List<BaseCard>();
-            this.topDeckIndex = -1;
             this.fatigueDamage = 0;
         }
         
@@ -36,7 +36,6 @@ namespace HearthAnalyzer.Core.Cards
         public Deck(List<BaseCard> cards)
         {
             this.Cards = cards;
-            this.topDeckIndex = this.Cards.Count - 1;
             this.fatigueDamage = 0;
         }
 
@@ -46,38 +45,15 @@ namespace HearthAnalyzer.Core.Cards
         /// <returns>The card that was drawn</returns>
         public BaseCard DrawCard()
         {
-            if (topDeckIndex < 0)
+            if (TopDeckIndex < 0)
             {
                 fatigueDamage++;
                 return new FatigueCard(fatigueDamage);
             }
 
-            BaseCard card = this.Cards[topDeckIndex];
-            this.Cards.RemoveAt(topDeckIndex);
-            this.topDeckIndex--;
+            BaseCard card = this.Cards[TopDeckIndex];
+            this.Cards.RemoveAt(TopDeckIndex);
             return card;
-        }
-
-        /// <summary>
-        /// Adds a card to the current deck
-        /// </summary>
-        /// <param name="card">The card to add</param>
-        /// <remarks>Adds to the end of the deck by default</remarks>
-        public void AddCard(BaseCard card)
-        {
-            this.Cards.Add(card);
-            this.topDeckIndex++;
-        }
-
-        /// <summary>
-        /// Adds a list of cards to the current deck
-        /// </summary>
-        /// <param name="cards">The list of cards to add</param>
-        /// <remarks>Adds to the end of the deck by default</remarks>
-        public void AddCards(IEnumerable<BaseCard> cards)
-        {
-            this.Cards.AddRange(cards);
-            this.topDeckIndex = this.Cards.Count - 1;
         }
 
         /// <summary>
@@ -94,6 +70,26 @@ namespace HearthAnalyzer.Core.Cards
             }
 
             return cards;
+        }
+
+        /// <summary>
+        /// Adds a card to the current deck
+        /// </summary>
+        /// <param name="card">The card to add</param>
+        /// <remarks>Adds to the end of the deck by default</remarks>
+        public void AddCard(BaseCard card)
+        {
+            this.Cards.Add(card);
+        }
+
+        /// <summary>
+        /// Adds a list of cards to the current deck
+        /// </summary>
+        /// <param name="cards">The list of cards to add</param>
+        /// <remarks>Adds to the end of the deck by default</remarks>
+        public void AddCards(IEnumerable<BaseCard> cards)
+        {
+            this.Cards.AddRange(cards);
         }
 
         /// <summary>

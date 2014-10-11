@@ -40,7 +40,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
             if (player == this.Owner)
             {
                 var minionsInHand = this.Owner.Hand.Where(card => card is BaseMinion).ToList();
-                if (minionsInHand.Count() > 0)
+                if (minionsInHand.Any())
                 {
                     int randomMinionIndex = GameEngine.Random.Next(minionsInHand.Count());
                     var randomMinion = minionsInHand[randomMinionIndex] as BaseMinion;
@@ -49,8 +49,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
                     player.AddCardToHand(this);
                     GameEventManager.UnregisterForEvents(this);
 
-                    var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.FindIndex(card => card == null);
-                    player.PlayCard(randomMinion, null, firstEmptySlot, CardEffect.NONE, forceSummoned: true);
+                    var firstEmptySlot = GameEngine.GameState.CurrentPlayerPlayZone.Count(card => card != null);
+                    player.SummonMinion(randomMinion, null, firstEmptySlot, CardEffect.NONE, forceSummoned: true, cardSource: player.hand);
                 }
             }
         }

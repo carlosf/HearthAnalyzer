@@ -45,11 +45,11 @@ namespace HearthAnalyzer.Core.Tests
             player.Deck.AddCard(new ChillwindYeti());
 
             Assert.AreEqual(1, player.Deck.Cards.Count, "Verify there is now one card");
-            Assert.AreEqual(0, player.Deck.topDeckIndex, "Verify topDeckIndex");
+            Assert.AreEqual(0, player.Deck.TopDeckIndex, "Verify TopDeckIndex");
 
             player.Deck.AddCards(Enumerable.Repeat<BaseCard>(new ChillwindYeti(), 29).ToList());
             Assert.AreEqual(30, player.Deck.Cards.Count, "Verify the deck now has 30 cards");
-            Assert.AreEqual(29, player.Deck.topDeckIndex, "Verify topDeckIndex");
+            Assert.AreEqual(29, player.Deck.TopDeckIndex, "Verify TopDeckIndex");
         }
 
         /// <summary>

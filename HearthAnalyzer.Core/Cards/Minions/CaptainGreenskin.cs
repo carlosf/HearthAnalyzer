@@ -19,6 +19,7 @@ namespace HearthAnalyzer.Core.Cards.Minions
         private const int MANA_COST = 5;
         private const int ATTACK_POWER = 5;
         private const int HEALTH = 4;
+        private const int BATTLECRY_BUFF_VALUE = 1;
 
         public CaptainGreenskin(int id = -1)
         {
@@ -30,6 +31,14 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.PIRATE;
+        }
+
+        public void Battlecry(IDamageableEntity subTarget)
+        {
+            BaseWeapon weapon = GameEngine.GameState.CurrentPlayer.Weapon;
+            if (weapon != null) {
+                weapon.TakeBuff(BATTLECRY_BUFF_VALUE, BATTLECRY_BUFF_VALUE);
+            }
         }
     }
 }

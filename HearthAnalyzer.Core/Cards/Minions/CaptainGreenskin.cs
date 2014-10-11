@@ -11,9 +11,6 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// <b>Battlecry:</b> Give your weapon +1/+1.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
     public class CaptainGreenskin : BaseMinion
     {
         private const int MANA_COST = 5;

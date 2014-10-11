@@ -13,6 +13,8 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// </summary>
     /// <remarks>
     /// TODO: NOT YET COMPLETELY IMPLEMENTED
+    /// NOTE: If your board is full, it will kill the mind controlled minion
+    ///  source: http://www.reddit.com/r/hearthstone/comments/1q1ech/til_mindcontrol_tech_kills_a_minion_if_you_have_a/
     /// </remarks>
     public class MindControlTech : BaseMinion
     {

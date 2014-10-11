@@ -1,9 +1,9 @@
 HearthAnalyzer
 ==============
 
-HearthAnalyzer is a project seeking to accomplish the following goals:
+HearthAnalyzer is a Hearthstone Simulator seeking to accomplish the following goals:
 
-1. Provide an as accurate as possible implementation of the game mechanics and rules of Hearthstone.
+1. Provide an as accurate as possible simulation of the game mechanics and rules of Hearthstone.
 2. Read and apply the game state from Hearthstone into HearthAnalyzer's internal representation
 3. Given a game state, calculate the "best" next move based on some heuristics
 4. Run complete simulations

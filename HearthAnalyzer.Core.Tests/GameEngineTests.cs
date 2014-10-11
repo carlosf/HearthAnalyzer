@@ -360,6 +360,8 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void Stealth()
         {
+            GameEngine.GameState.CurrentPlayer = player;
+
             var bloodImp = HearthEntityFactory.CreateCard<BloodImp>();
 
             GameEngine.GameState.WaitingPlayerPlayZone[0] = bloodImp;
@@ -413,6 +415,107 @@ namespace HearthAnalyzer.Core.Tests
             bloodImp.Attack(player);
 
             Assert.IsFalse(bloodImp.IsStealthed, "Verify blood imp is no longer stealthed");
+        }
+
+        /// <summary>
+        /// Frozen minions should be unfrozen if they have not attacked on their turn
+        /// </summary>
+        [TestMethod]
+        public void UnfreezeMinions()
+        {
+            GameEngine.GameState.CurrentPlayer = player;
+
+            var playerYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            var playerGolem = HearthEntityFactory.CreateCard<ArcaneGolem>();
+            var playerAlakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
+            var opponentYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = playerYeti;
+            GameEngine.GameState.CurrentPlayerPlayZone[1] = playerGolem;
+            GameEngine.GameState.CurrentPlayerPlayZone[2] = playerAlakir;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = opponentYeti;
+
+            playerGolem.Attack(opponent);
+            playerAlakir.Attack(opponent);
+
+            playerYeti.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+            playerGolem.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+            playerAlakir.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+            opponentYeti.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+
+            GameEngine.EndTurn();
+
+            // The player's yeti should be unfrozen because it was frozen before it could attack.
+            // By definition, freezing means the minion should miss out on an attack so since the
+            // yeti didn't attack yet, then it satisfies the requirements to be unfrozen.
+            Assert.IsFalse(playerYeti.IsFrozen, "Verify player's yeti is not frozen");
+
+            // This also means that the arcane golem shouldn't be unfrozen because it hasn't missed out on
+            // an attack yet since it already attacked this turn
+            Assert.IsTrue(playerGolem.IsFrozen, "Verify player's arcane golem is still frozen");
+
+            // Now, if a windfuried minion has already attacked this turn, then it will remain frozen
+            Assert.IsTrue(playerAlakir.IsFrozen, "Verify player's alakir is still frozen");
+
+            // On the other hand, the opponent's should be frozen because it hasn't missed out on an attack yet
+            Assert.IsTrue(opponentYeti.IsFrozen, "Verify opponent's yeti is still frozen");
+            
+            GameEngine.EndTurn();
+
+            // Now, the opponent's yeti should be unfrozen since it has missed out on an attack
+            Assert.IsFalse(opponentYeti.IsFrozen);
+            
+            Assert.IsTrue(playerGolem.IsFrozen, "Verify player's arcane golem is still frozen");
+            Assert.IsTrue(playerAlakir.IsFrozen, "Verify player's alakir is still frozen");
+
+            GameEngine.EndTurn();
+
+            // Now, the arcane golem and alakir should finally be unfrozen because it has missed out on an attack
+            Assert.IsFalse(playerGolem.IsFrozen, "Verify player's arcane golem is finally unfrozen");
+            Assert.IsFalse(playerAlakir.IsFrozen, "Verify player's alakir is finally unfrozen");
+        }
+
+        /// <summary>
+        /// Frozen players should be unfrozen if they have not attacked on their turn
+        /// </summary>
+        [TestMethod]
+        public void UnfreezePlayers()
+        {
+            GameEngine.GameState.CurrentPlayer = player;
+
+            var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
+            fieryWarAxe.WeaponOwner = player;
+            player.Weapon = fieryWarAxe;
+
+            player.ApplyStatusEffects(PlayerStatusEffects.FROZEN);
+            opponent.ApplyStatusEffects(PlayerStatusEffects.FROZEN);
+
+            GameEngine.EndTurn();
+
+            // The player should be unfrozen because they have not attacked their turn
+            Assert.IsFalse(player.IsFrozen, "Verify player is unfrozen");
+
+            // The opponent on the other hand should still be frozen
+            Assert.IsTrue(opponent.IsFrozen, "Verify opponent is frozen");
+
+            GameEngine.EndTurn();
+
+            // Now the opponent should be unfrozen
+            Assert.IsFalse(opponent.IsFrozen, "Verify opponent is unfrozen");
+
+            player.Attack(opponent);
+            player.ApplyStatusEffects(PlayerStatusEffects.FROZEN);
+
+            GameEngine.EndTurn();
+
+            // This time, the player should remain frozen because they have attacked on their turn
+            Assert.IsTrue(player.IsFrozen, "Verify player is frozen");
+
+            GameEngine.EndTurn();
+            GameEngine.EndTurn();
+
+            // And now, they should be unfrozen
+            Assert.IsFalse(player.IsFrozen, "Verify player is unfrozen");
         }
 
         /// <summary>

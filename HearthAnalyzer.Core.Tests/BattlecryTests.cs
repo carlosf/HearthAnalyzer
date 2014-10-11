@@ -225,18 +225,17 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(3, player.BonusSpellPower, "Verify player's bonus spell power");
         }
 
-		/// <summary>
-		/// Verify that null pointer is not being thrown
-		/// </summary>
-		[TestMethod]
-		public void AncientMageOnEmptyBoard() {
-
-			var mage = HearthEntityFactory.CreateCard<AncientMage>();
-			mage.Owner = player;
-			mage.CurrentManaCost = 0;
-			player.AddCardToHand(mage);
-			player.PlayCard (mage, null);
-		}
+        /// <summary>
+        /// Verify that null pointer is not being thrown
+        /// </summary>
+        [TestMethod]
+        public void AncientMageOnEmptyBoard() {
+            var mage = HearthEntityFactory.CreateCard<AncientMage>();
+            mage.Owner = player;
+            mage.CurrentManaCost = 0;
+            player.AddCardToHand(mage);
+            player.PlayCard (mage, null);
+        }
 
 
         /// <summary>

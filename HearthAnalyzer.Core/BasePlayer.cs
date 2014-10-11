@@ -157,7 +157,7 @@ namespace HearthAnalyzer.Core
             var minionCard = cardInHand as BaseMinion;
             if (minionCard != null)
             {
-                this.PlayMinion(minionCard, subTarget, gameboardPos, cardEffect);
+                this.SummonMinion(minionCard, subTarget, gameboardPos, cardEffect, forceSummoned: false, cardSource: this.hand);
             }
 
             var spellCard = cardInHand as BaseSpell;
@@ -186,17 +186,14 @@ namespace HearthAnalyzer.Core
         }
 
         /// <summary>
-        /// Plays a minion onto the game board
+        /// Summons a minion onto the board
         /// </summary>
-        /// <param name="minion">The minion to be played on the game board</param>
+        /// <param name="minion">The minion to summon</param>
         /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
-        /// <param name="cardEffect">The card effect to use</param>
         /// <param name="gameboardPos">The position on the gameboard to place the card</param>
-        public void PlayMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE)
-        {
-            this.SummonMinion(minion, subTarget, gameboardPos, cardEffect, forceSummoned: false, cardSource: this.hand);
-        }
-
+        /// <param name="cardEffect">The card effect to use</param>
+        /// <param name="forceSummoned">Whether or not to force summon the minion, this means no battle cry effects</param>
+        /// <param name="cardSource">Where, if any, should we remove the card from</param>
         public void SummonMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, ICollection<BaseCard> cardSource = null)
         {
             var gameState = GameEngine.GameState;

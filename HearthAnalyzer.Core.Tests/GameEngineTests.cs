@@ -360,6 +360,8 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void Stealth()
         {
+            GameEngine.GameState.CurrentPlayer = player;
+
             var bloodImp = HearthEntityFactory.CreateCard<BloodImp>();
 
             GameEngine.GameState.WaitingPlayerPlayZone[0] = bloodImp;
@@ -421,6 +423,8 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void UnfreezeMinions()
         {
+            GameEngine.GameState.CurrentPlayer = player;
+
             var playerYeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
             var playerGolem = HearthEntityFactory.CreateCard<ArcaneGolem>();
             var playerAlakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
@@ -477,6 +481,8 @@ namespace HearthAnalyzer.Core.Tests
         [TestMethod]
         public void UnfreezePlayers()
         {
+            GameEngine.GameState.CurrentPlayer = player;
+
             var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
             fieryWarAxe.WeaponOwner = player;
             player.Weapon = fieryWarAxe;

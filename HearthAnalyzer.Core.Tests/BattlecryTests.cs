@@ -456,6 +456,115 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Steals a minion with 2 or less attack
+        /// </summary>
+        [TestMethod]
+        public void CabalShadowPriest()
+        {
+            var cabal = HearthEntityFactory.CreateCard<CabalShadowPriest>();
+            cabal.CurrentManaCost = 0;
+
+            var snapjaw = HearthEntityFactory.CreateCard<OasisSnapjaw>();
+            snapjaw.Owner = opponent;
+
+            var faerie = HearthEntityFactory.CreateCard<FaerieDragon>();
+            faerie.Owner = opponent;
+
+            // No valid target, no supplied target
+            player.AddCardToHand(cabal);
+            player.PlayCard(cabal, null);
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(cabal));
+
+            GameEngine.GameState.Board.RemoveCard(cabal);
+            player.AddCardToHand(cabal);
+
+            // No valid target, supplied target
+            try
+            {
+                player.PlayCard(cabal, snapjaw);
+                Assert.Fail("Shouldn't be able to mark snapjaw as target because it isn't on the board yet");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(cabal);
+                player.AddCardToHand(cabal);
+            }
+
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = snapjaw;
+            GameEngine.GameState.WaitingPlayerPlayZone[1] = faerie;
+
+            // Valid target, no supplied target
+            try
+            {
+                player.PlayCard(cabal, null);
+                Assert.Fail("Can't play without a target");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(cabal);
+                player.AddCardToHand(cabal);
+            }
+
+            // Valid target on board, invalid supplied target
+            try
+            {
+                player.PlayCard(cabal, faerie);
+                Assert.Fail("Shouldn't be able to target invalid minions");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(cabal);
+                player.AddCardToHand(cabal);
+            }
+
+            // Valid target on board, supplied valid target, board too full
+            for (int i = 0; i < Constants.MAX_CARDS_ON_BOARD; ++i)
+            {
+                if (GameEngine.GameState.CurrentPlayerPlayZone[i] == null)
+                {
+                    GameEngine.GameState.CurrentPlayerPlayZone[i] = HearthEntityFactory.CreateCard<Barrel>();
+                }
+            }
+
+            try
+            {
+                player.PlayCard(cabal, snapjaw);
+                Assert.Fail("Board should be too full to play");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            finally
+            {
+                GameEngine.GameState.Board.RemoveCard(cabal);
+                player.AddCardToHand(cabal);
+                
+                // remove the barrels
+                for (int i = 0; i < Constants.MAX_CARDS_ON_BOARD; ++i)
+                {
+                    if (GameEngine.GameState.CurrentPlayerPlayZone[i] is Barrel)
+                    {
+                        GameEngine.GameState.CurrentPlayerPlayZone[i] = null;
+                    }
+                }
+            }
+
+            // Valid target, supplied target
+            player.PlayCard(cabal, snapjaw);
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(snapjaw), "Verify snapjaw is on this side of the board now");
+            Assert.IsTrue(snapjaw.Owner == player, "Verify the player owns the snapjaw now");
+        }
+
+        /// <summary>
         /// Freeze a character
         /// </summary>
         [TestMethod]

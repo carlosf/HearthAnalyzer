@@ -37,9 +37,10 @@ namespace HearthAnalyzer.Core.Cards.Minions
 
         private void OnSpellCasting(BaseSpell spell, IDamageableEntity target, out bool shouldAbort)
         {
-            var fireball = HearthEntityFactory.CreateCard<Fireball>();
-            this.Owner.AddCardToHand(fireball);
-
+            if (spell.Owner == this.Owner) {
+                var fireball = HearthEntityFactory.CreateCard<Fireball> ();
+                this.Owner.AddCardToHand (fireball);
+            }
             shouldAbort = false;
         }
     }

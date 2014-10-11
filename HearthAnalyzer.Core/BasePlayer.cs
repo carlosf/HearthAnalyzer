@@ -465,6 +465,11 @@ namespace HearthAnalyzer.Core
 
         public void Attack(IDamageableEntity target)
         {
+            if (!this.CanAttack)
+            {
+                throw new InvalidOperationException("Player can't attack yet!");
+            }
+
             if (this.Weapon != null)
             {
                 this.Weapon.Attack(target);

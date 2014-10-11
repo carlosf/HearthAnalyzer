@@ -39,6 +39,7 @@ namespace HearthAnalyzer.Core
             DRAW
         }
 
+        // Keeps track of whether not a player has mulliganed yet
         internal static bool PlayerMulliganed = false;
         internal static bool OpponentMulliganed = false;
 
@@ -420,12 +421,20 @@ namespace HearthAnalyzer.Core
             DeadCardsThisTurn.Clear();
 
             // Unexhaust all player owned minions and remove temporary boons
-            foreach (var minion in GameEngine.GameState.CurrentPlayerPlayZone)
+            foreach (var card in GameEngine.GameState.CurrentPlayerPlayZone)
             {
-                if (minion != null)
+                if (card != null)
                 {
-                    ((BaseMinion)minion).RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
-                    ((BaseMinion)minion).ResetAttacksThisTurn();
+                    var minion = (BaseMinion) card;
+
+                    // If a minion has not attacked this turn and is frozen, it should be unfrozen
+                    if (minion.IsFrozen && minion.attacksThisTurn == 0)
+                    {
+                        minion.RemoveStatusEffects(MinionStatusEffects.FROZEN);
+                    }
+
+                    minion.RemoveStatusEffects(MinionStatusEffects.EXHAUSTED);
+                    minion.ResetAttacksThisTurn();
                     minion.TemporaryAttackBuff = 0;
                 }
             }
@@ -440,6 +449,12 @@ namespace HearthAnalyzer.Core
 
             GameEngine.GameState.CurrentPlayer.TemporaryAttackBuff = 0;
             GameEngine.GameState.WaitingPlayer.TemporaryAttackBuff = 0;
+
+            // If the player has not attacked this turn and is frozen, they should be unfrozen
+            if (currentPlayer.IsFrozen && currentPlayer.attacksThisTurn == 0)
+            {
+                currentPlayer.RemoveStatusEffects(PlayerStatusEffects.FROZEN);
+            }
 
             // Unexhaust players
             GameEngine.GameState.CurrentPlayer.ResetAttacksThisTurn();

@@ -73,6 +73,8 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(26, player.Health, "Verify the player is now at 26 health");
             Assert.AreEqual(1, warAxe.Durability, "Verify the war axe is now at 1 durability");
 
+            player.RemoveStatusEffects(PlayerStatusEffects.EXHAUSTED);
+
             player.Attack(yeti);
             Assert.AreEqual(-1, yeti.CurrentHealth, "Verify Yeti_1 is at -1 health");
             Assert.AreEqual(22, player.Health, "Verify the player is now at 22 health");
@@ -184,6 +186,47 @@ namespace HearthAnalyzer.Core.Tests
 
             GameEngine.EndTurn();
             Assert.IsFalse(player.IsExhausted, "Verify the player is unexhausted after the turn ends");
+        }
+
+        /// <summary>
+        /// Verify minions and players can't attack when they are frozen
+        /// </summary>
+        [TestMethod]
+        public void CantAttackWhenFrozen()
+        {
+            var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
+            fieryWarAxe.CurrentManaCost = 0;
+
+            var golem = HearthEntityFactory.CreateCard<ArcaneGolem>();
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = golem;
+
+            player.AddCardToHand(fieryWarAxe);
+            player.PlayCard(fieryWarAxe, null);
+
+            // Freeze the player and the minion
+            player.ApplyStatusEffects(PlayerStatusEffects.FROZEN);
+            golem.ApplyStatusEffects(MinionStatusEffects.FROZEN);
+
+            Assert.IsFalse(player.CanAttack, "Verify player can't attack");
+            Assert.IsFalse(golem.CanAttack, "Verify golem can't attack");
+
+            try
+            {
+                player.Attack(opponent);
+                Assert.Fail("Player shouldn't be able to attack!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            try
+            {
+                golem.Attack(opponent);
+                Assert.Fail("Player shouldn't be able to attack!");
+            }
+            catch (InvalidOperationException)
+            {
+            }
         }
     }
 }

@@ -314,5 +314,21 @@ namespace HearthAnalyzer.Core.Tests
                 Assert.Fail("No other minion got bonus health.");
             }
         }
+
+        /// <summary>
+        /// At end of turn, give the player a random dream card
+        /// </summary>
+        [Test]
+        public void YseraTests()
+        {
+            var ysera = HearthEntityFactory.CreateCard<Ysera>();
+            ysera.CurrentManaCost = 0;
+
+            player.AddCardToHand(ysera);
+            player.PlayCard(ysera, null);
+
+            GameEngine.EndTurn();
+            Assert.IsTrue(player.Hand.Any(card => ysera.dreamCardTypes.Contains(card.GetType())), "Verify player got a dream card");
+        }
     }
 }

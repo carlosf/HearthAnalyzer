@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HearthAnalyzer.Core.Cards.Spells;
 
 namespace HearthAnalyzer.Core.Cards.Minions
 {
@@ -11,14 +12,23 @@ namespace HearthAnalyzer.Core.Cards.Minions
     /// 
     /// At the end of your turn, draw a Dream Card.
     /// </summary>
-    /// <remarks>
-    /// TODO: NOT YET COMPLETELY IMPLEMENTED
-    /// </remarks>
-    public class Ysera : BaseMinion
+    public class Ysera : BaseMinion, ITriggeredEffectOwner
     {
-        private const int MANA_COST = 9;
-        private const int ATTACK_POWER = 4;
-        private const int HEALTH = 12;
+        internal const int MANA_COST = 9;
+        internal const int ATTACK_POWER = 4;
+        internal const int HEALTH = 12;
+
+        /// <summary>
+        /// List of dream cards Ysera can spawn
+        /// </summary>
+        internal readonly List<Type> dreamCardTypes = new List<Type>()
+        {
+            typeof (Dream),
+            typeof (EmeraldDrake),
+            typeof (LaughingSister),
+            typeof (Nightmare),
+            typeof (YseraAwakens)
+        };
 
         public Ysera(int id = -1)
         {
@@ -30,6 +40,23 @@ namespace HearthAnalyzer.Core.Cards.Minions
             this.MaxHealth = HEALTH;
             this.CurrentHealth = HEALTH;
 			this.Type = CardType.DRAGON;
+        }
+
+        public void RegisterEffect()
+        {
+            GameEventManager.RegisterForEvent(this, (GameEventManager.TurnEndEventHandler)this.OnTurnEnd);
+        }
+
+        private void OnTurnEnd(BasePlayer player)
+        {
+            var randomDreamCardIndex = GameEngine.Random.Next(this.dreamCardTypes.Count);
+            var randomDreamCardType = this.dreamCardTypes[randomDreamCardIndex];
+
+            var createCardMethod = typeof(HearthEntityFactory).GetMethod("CreateCard");
+            var createCardTypeMethod = createCardMethod.MakeGenericMethod(new[] { randomDreamCardType });
+
+            dynamic dreamCard = createCardTypeMethod.Invoke(null, null);
+            player.AddCardToHand(dreamCard);
         }
     }
 }

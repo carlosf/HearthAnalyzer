@@ -170,6 +170,62 @@ namespace HearthAnalyzer.Core.Tests
         }
 
         /// <summary>
+        /// Verifies heals a target
+        /// </summary>
+        [Test]
+        public void DeathrattleHealTarget()
+        {
+            var chow = HearthEntityFactory.CreateCard<ZombieChow>();
+            chow.CurrentManaCost = 0;
+
+            var giant = HearthEntityFactory.CreateCard<SeaGiant>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
+
+            player.AddCardToHand(chow);
+            player.PlayCard(chow, null);
+
+            GameEngine.EndTurn();
+
+            int startingHealth = 5;
+            opponent.Health = startingHealth;
+
+            giant.Attack(chow);
+
+            Assert.AreEqual(startingHealth + ZombieChow.DEATHRATTLE_POWER, opponent.Health, "Verify opponent got healed");
+        }
+
+        /// <summary>
+        /// Verifies heal does damage with auchenai
+        /// </summary>
+        [Test]
+        public void DeathrattleHealTargetWithAuchenai()
+        {
+            var chow = HearthEntityFactory.CreateCard<ZombieChow>();
+            chow.CurrentManaCost = 0;
+
+            var auchenai = HearthEntityFactory.CreateCard<AuchenaiSoulpriest>();
+            auchenai.CurrentManaCost = 0;
+
+            var giant = HearthEntityFactory.CreateCard<SeaGiant>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
+
+            player.AddCardToHand(chow);
+            player.PlayCard(chow, null);
+
+            player.AddCardToHand(auchenai);
+            player.PlayCard(auchenai, null);
+
+            GameEngine.EndTurn();
+
+            int startingHealth = 10;
+            opponent.Health = startingHealth;
+
+            giant.Attack(chow);
+
+            Assert.AreEqual(startingHealth - ZombieChow.DEATHRATTLE_POWER, opponent.Health, "Verify opponent got damaged");
+        }
+
+        /// <summary>
         /// Verify that if Death's Bite (weapon) dies or gets replaced, it triggers its death rattle
         /// </summary>
         [Test]

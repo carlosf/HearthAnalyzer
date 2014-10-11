@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Deathrattles\DeathrattleDrawCard.cs" />
+    <Compile Include="Deathrattles\DeathrattleHealTarget.cs" />
     <Compile Include="Deathrattles\DeathrattleReturnFriendlyMinion.cs" />
     <Compile Include="Deathrattles\DeathrattleSummonMinion.cs" />
     <Compile Include="Interfaces\IDeathrattler.cs" />

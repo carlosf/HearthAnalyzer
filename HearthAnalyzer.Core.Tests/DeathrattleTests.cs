@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Weapons;
+using HearthAnalyzer.Core.Deathrattles;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using HearthAnalyzer.Core.Cards.Minions;
@@ -117,6 +118,55 @@ namespace HearthAnalyzer.Core.Tests
             yeti.Attack(thalnos);
 
             Assert.AreEqual(29, player.Health, "Verify player drew one fatigue card");
+        }
+
+        /// <summary>
+        /// Verifies summoning a minion from no card source
+        /// </summary>
+        [TestMethod]
+        public void DeathrattleSummonMinionNoCardSource()
+        {
+            var cairne = HearthEntityFactory.CreateCard<CairneBloodhoof>();
+            cairne.CurrentManaCost = 0;
+
+            player.AddCardToHand(cairne);
+            player.PlayCard(cairne, null);
+
+            var giant = HearthEntityFactory.CreateCard<SeaGiant>();
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
+
+            GameEngine.EndTurn();
+
+            giant.Attack(cairne);
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(cairne), "Verify cairne died");
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Any(card => card is BaineBloodhoof), "Verify Baine got summoned");
+        }
+
+        /// <summary>
+        /// Verifies summoning a minion from a card source
+        /// </summary>
+        [TestMethod]
+        public void DeathrattleSummonMinionFromCardSource()
+        {
+            var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
+            yeti.Owner = player;
+
+            var rag = HearthEntityFactory.CreateCard<RagnarostheFirelord>();
+            var giant = HearthEntityFactory.CreateCard<SeaGiant>();
+
+            GameEngine.GameState.CurrentPlayerPlayZone[0] = yeti;
+            GameEngine.GameState.WaitingPlayerPlayZone[0] = giant;
+
+            GameEngine.RegisterDeathrattle(yeti, new DeathrattleSummonMinion<RagnarostheFirelord>(yeti.Owner, player.hand));
+
+            player.AddCardToHand(rag);
+
+            GameEngine.EndTurn();
+
+            giant.Attack(yeti);
+            Assert.IsTrue(GameEngine.DeadCardsThisTurn.Contains(yeti), "Verify yeti died");
+            Assert.IsTrue(GameEngine.GameState.CurrentPlayerPlayZone.Contains(rag), "Verify rag got summoned");
+            Assert.IsFalse(player.Hand.Contains(rag), "Verify rag is no longer in player's hand");
         }
 
         /// <summary>

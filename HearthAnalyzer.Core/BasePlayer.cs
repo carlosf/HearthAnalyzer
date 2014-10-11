@@ -130,8 +130,8 @@ namespace HearthAnalyzer.Core
         /// <param name="card">The card to play</param>
         /// <param name="subTarget">The sub target for this card, usually for targeting batlle cry spells</param>
         /// <param name="cardEffect">The card effect to use</param>
-        /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable)</param>
-        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE)
+        /// <param name="gameboardPos">The position on the gameboard to place the card (if applicable). A value of -1 means play it in the next available slot</param>
+        public void PlayCard(BaseCard card, IDamageableEntity subTarget, int gameboardPos = -1, CardEffect cardEffect = CardEffect.NONE)
         {
             // Is it even our turn to play?
             var gameState = GameEngine.GameState;
@@ -190,11 +190,11 @@ namespace HearthAnalyzer.Core
         /// </summary>
         /// <param name="minion">The minion to summon</param>
         /// <param name="subTarget">The sub target for this card, usually for targetting battle cry spells</param>
-        /// <param name="gameboardPos">The position on the gameboard to place the card</param>
+        /// <param name="gameboardPos">The position on the gameboard to place the card. A value of -1 means play it in the next available slot</param>
         /// <param name="cardEffect">The card effect to use</param>
         /// <param name="forceSummoned">Whether or not to force summon the minion, this means no battle cry effects</param>
         /// <param name="cardSource">Where, if any, should we remove the card from</param>
-        public void SummonMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = 0, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, ICollection<BaseCard> cardSource = null)
+        public void SummonMinion(BaseMinion minion, IDamageableEntity subTarget, int gameboardPos = -1, CardEffect cardEffect = CardEffect.NONE, bool forceSummoned = false, ICollection<BaseCard> cardSource = null)
         {
             var gameState = GameEngine.GameState;
 
@@ -216,8 +216,14 @@ namespace HearthAnalyzer.Core
                 throw new InvalidOperationException(string.Format("There are too many cards ({0}) in the playzone!", playZoneCount));
             }
 
+            int summonPosition = gameboardPos;
+            if (gameboardPos == -1)
+            {
+                summonPosition = GameEngine.GameState.CurrentPlayerPlayZone.Count(card => card != null);
+            }
+
             // If there is a card already in the target gameboard position, shift everything to the right and place it there
-            if (playZone[gameboardPos] != null)
+            if (playZone[summonPosition] != null)
             {
                 for (int i = playZone.Count - 1; i > gameboardPos; i--)
                 {
@@ -226,7 +232,7 @@ namespace HearthAnalyzer.Core
             }
 
             // Place the minion on the board
-            playZone[gameboardPos] = minion;
+            playZone[summonPosition] = minion;
 
             // Set the time the card was played
             minion.TimePlayed = DateTime.Now;

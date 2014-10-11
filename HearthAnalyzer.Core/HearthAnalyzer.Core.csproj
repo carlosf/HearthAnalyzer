@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Deathrattles\DeathrattleDrawCard.cs" />
     <Compile Include="Deathrattles\DeathrattleReturnFriendlyMinion.cs" />
+    <Compile Include="Deathrattles\DeathrattleSummonMinion.cs" />
     <Compile Include="Interfaces\IDeathrattler.cs" />
     <Compile Include="HearthEntityFactory.cs" />
     <Compile Include="Cards\BaseSpell.cs" />

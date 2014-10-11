@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class MultiCardEffectTests
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -28,7 +28,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -38,7 +38,7 @@ namespace HearthAnalyzer.Core.Tests
         /// Effect one: Draw 2 cards
         /// Effect two: Restore 5 health
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AncientOfLore()
         {
             // Verify invalid playing of card
@@ -79,7 +79,7 @@ namespace HearthAnalyzer.Core.Tests
         /// Effect one: Attack +5
         /// Effect two: Health +5 and Taunt
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AncientOfWar()
         {
             var war = HearthEntityFactory.CreateCard<AncientOfWar>();

@@ -11,11 +11,11 @@ using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Cards.Weapons;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class GameEngineTests : BaseTestSuite
     {
         private BasePlayer player;
@@ -25,7 +25,7 @@ namespace HearthAnalyzer.Core.Tests
 
         private readonly string DeckTestDataPath = @".\TestData\Decks";
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -42,7 +42,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameEnded += OnGameEnded;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -51,7 +51,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify mulligan logic
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Mulligan()
         {
             GameEngine.DealPreMulligan();
@@ -82,7 +82,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the post mulligan phase
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PostMulligan()
         {
             var currentPlayer = GameEngine.GameState.CurrentPlayer;
@@ -107,7 +107,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify ending a turn
         /// </summary>
-        [TestMethod]
+        [Test]
         public void EndTurn()
         {
             GameEngine.DealPreMulligan();
@@ -124,7 +124,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify mana cannot go beyond capacity
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AddManaCapped()
         {
             GameEngine.GameState.WaitingPlayer.MaxMana = 10;
@@ -138,7 +138,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify death due to fatigue
         /// </summary>
-        [TestMethod]
+        [Test]
         public void GameEndDueToFatigueDamage()
         {
             player.Health = 1;
@@ -157,7 +157,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the game ended due to attack
         /// </summary>
-        [TestMethod]
+        [Test]
         public void GameEndDueToAttack()
         {
             opponent.Health = 1;
@@ -176,7 +176,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the game was a draw
         /// </summary>
-        [TestMethod]
+        [Test]
         public void GameDraw()
         {
             player.Health = 1;
@@ -198,7 +198,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the game ends if the opponent is killed as a result of playing a card
         /// </summary>
-        [TestMethod]
+        [Test]
         public void GameEndDueToCardPlayed()
         {
             opponent.Health = 1;
@@ -218,7 +218,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify overload logic
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Overload()
         {
             player.MaxMana = Constants.MAX_MANA_CAPACITY;
@@ -249,7 +249,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify you can't attack through taunt
         /// </summary>
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Taunt()
         {
@@ -270,7 +270,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify charge and windfury mechanics
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ChargeAndWindfury()
         {
             var alakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
@@ -300,7 +300,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify divine shield mechanics
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DivineShield()
         {
             var alakir = HearthEntityFactory.CreateCard<AlAkirtheWindlord>();
@@ -324,7 +324,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify can't attack modifier
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CantAttack()
         {
             GameEngine.GameState.CurrentPlayer = player;
@@ -357,7 +357,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify stealthed mechanics
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Stealth()
         {
             GameEngine.GameState.CurrentPlayer = player;
@@ -420,7 +420,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Frozen minions should be unfrozen if they have not attacked on their turn
         /// </summary>
-        [TestMethod]
+        [Test]
         public void UnfreezeMinions()
         {
             GameEngine.GameState.CurrentPlayer = player;
@@ -478,7 +478,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Frozen players should be unfrozen if they have not attacked on their turn
         /// </summary>
-        [TestMethod]
+        [Test]
         public void UnfreezePlayers()
         {
             GameEngine.GameState.CurrentPlayer = player;

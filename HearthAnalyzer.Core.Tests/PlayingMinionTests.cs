@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class PlayingMinionTests : BaseTestSuite
     {
         private BasePlayer player;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = new Warlock();
@@ -28,7 +28,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -38,7 +38,7 @@ namespace HearthAnalyzer.Core.Tests
         /// Play 7 minions to fill up the board.
         /// Play an 8th minion and verify that it is illegal
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PlaceMinionsUntilFull()
         {
             // For this test's purpose, we don't care about mana
@@ -70,7 +70,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Play a minion with insufficient mana and verify it is illegal
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PlayMinionWithInsufficientMana()
         {
             player.Mana = 0;
@@ -92,7 +92,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify minions shifting when placed in between
         /// </summary>
-        [TestMethod]
+        [Test]
         public void MinionShifting()
         {
             // Don't care about mana cost for this test
@@ -148,7 +148,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify playing a minion decreases the player's mana
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ManaDecreasing()
         {
             const int startingMana = 10;

@@ -8,17 +8,17 @@ using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class SpellTests : BaseTestSuite
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = new Warlock();
@@ -28,7 +28,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -37,7 +37,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify circle of healing mechanics
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CircleOfHealing()
         {
             var circleOfHealing = HearthEntityFactory.CreateCard<CircleofHealing>();
@@ -66,7 +66,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Validate basic spell damage card Fireball
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Fireball()
         {
             var fireball = HearthEntityFactory.CreateCard<Fireball>();
@@ -90,7 +90,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Gives 2 mana this turn only
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Innervate()
         {
             var innervate = HearthEntityFactory.CreateCard<Innervate>();
@@ -113,7 +113,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Gives 1 mana this turn only
         /// </summary>
-        [TestMethod]
+        [Test]
         public void TheCoin()
         {
             var theCoin = HearthEntityFactory.CreateCard<TheCoin>();
@@ -136,7 +136,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Validate bonus spell power
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BonusSpellPower()
         {
             var ancientMage = HearthEntityFactory.CreateCard<AncientMage>();

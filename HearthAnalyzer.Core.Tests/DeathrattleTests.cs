@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Weapons;
 using HearthAnalyzer.Core.Deathrattles;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class DeathrattleTests : BaseTestSuite
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -29,13 +29,13 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.Initialize(player, opponent, null, 0, player);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
         }
 
-        [TestMethod]
+        [Test]
         public void DeathrattleDamageAllMinions()
         {
             var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -71,7 +71,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify a random friendly minion was returned to the hand
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeathRattleReturnFriendlyMinion()
         {
             var ambusher = HearthEntityFactory.CreateCard<AnubarAmbusher>();
@@ -101,7 +101,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verfiies cards are drawn
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeathrattleDrawCard()
         {
             var thalnos = HearthEntityFactory.CreateCard<BloodmageThalnos>();
@@ -123,7 +123,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verifies summoning a minion from no card source
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeathrattleSummonMinionNoCardSource()
         {
             var cairne = HearthEntityFactory.CreateCard<CairneBloodhoof>();
@@ -145,7 +145,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verifies summoning a minion from a card source
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeathrattleSummonMinionFromCardSource()
         {
             var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -172,7 +172,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that if Death's Bite (weapon) dies or gets replaced, it triggers its death rattle
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DeathsBite()
         {
             var deathsbite = HearthEntityFactory.CreateCard<DeathsBite>();

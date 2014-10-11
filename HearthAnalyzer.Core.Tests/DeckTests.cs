@@ -11,17 +11,17 @@ using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Heroes;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class DeckTests : BaseTestSuite
     {
         private BasePlayer player;
         private readonly string DeckTestDataPath = @".\TestData\Decks";
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = new Warlock();
@@ -30,7 +30,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -39,7 +39,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify adding cards
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AddCards()
         {
             player.Deck.AddCard(new ChillwindYeti());
@@ -55,7 +55,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify drawing a single card
         /// </summary>
-        [TestMethod]
+        [Test]
         public void DrawSingleCard()
         {
             player.Deck.AddCards(Enumerable.Repeat<BaseCard>(new ChillwindYeti(), 30).ToList());
@@ -70,7 +70,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the player takes fatigue damage when they run out of cards
         /// </summary>
-        [TestMethod]
+        [Test]
         public void FatigueDamage()
         {
             player.Deck.Cards.Clear();
@@ -88,7 +88,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify shuffling a card
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Shuffle()
         {
             for (int i = 0; i < 30; i++)
@@ -110,7 +110,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify constructing a deck from a deck file
         /// </summary>
-        [TestMethod]
+        [Test]
         public void FromValidDeckFile()
         {
             var zooLockDeckFile = Path.Combine(DeckTestDataPath, "ZooLock.txt");
@@ -158,7 +158,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify creating a deck from a deck file with too few cards
         /// </summary>
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(InvalidDataException))]
         public void FromInvalidDeckFileTooFewCards()
         {
@@ -169,7 +169,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify creating a deck from a deck file with too many cards
         /// </summary>
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(InvalidDataException))]
         public void FromInvalidDeckFileTooManyCards()
         {
@@ -180,7 +180,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify creating a deck from a deck file with bogus cards
         /// </summary>
-        [TestMethod]
+        [Test]
         [ExpectedException(typeof(InvalidDataException))]
         public void FromInvalidDeckFileBogusCards()
         {

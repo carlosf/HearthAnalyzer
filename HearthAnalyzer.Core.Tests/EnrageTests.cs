@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class EnrageTests
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -26,7 +26,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -35,7 +35,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// +3 attack
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AmaniBerserker()
         {
             var amani = HearthEntityFactory.CreateCard<AmaniBerserker>();
@@ -52,7 +52,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// +5 attack
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AngryChicken()
         {
             var chicken = HearthEntityFactory.CreateCard<AngryChicken>();

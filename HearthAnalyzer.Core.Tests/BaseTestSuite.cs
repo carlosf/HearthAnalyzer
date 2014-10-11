@@ -5,17 +5,19 @@ using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [SetUpFixture]
+    [TestFixture]
     public class BaseTestSuite
     {
-        [AssemblyInitialize]
-        public static void AssemblyInit(TestContext context)
+        [SetUp]
+        public void NUnitAssemblyInit()
         {
-            TestLogManager.Initialize(context);
+            TestLogManager.Initialize();
         }
     }
 }

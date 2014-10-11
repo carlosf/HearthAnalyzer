@@ -9,17 +9,17 @@ using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Spells;
 using HearthAnalyzer.Core.Cards.Weapons;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class TriggeredEffectTests
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -30,7 +30,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -39,7 +39,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Draw a card whenever damaged
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AcolyteOfPain()
         {
             var acolyte = HearthEntityFactory.CreateCard<AcolyteOfPain>();
@@ -62,7 +62,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// At the beginning of your turn, switch places with a random minion in your hand
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AlarmoBot()
         {
             var alarmo = HearthEntityFactory.CreateCard<AlarmoBot>();
@@ -102,7 +102,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that alarmobot summon doesn't have battlecry
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AlarmoBotSummonNoBattlecry()
         {
             var alarmo = HearthEntityFactory.CreateCard<AlarmoBot>();
@@ -128,7 +128,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that when a spell is casted, a fireball is added to the player's hand
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ArchmageAntonidas()
         {
             var antonidas = HearthEntityFactory.CreateCard<ArchmageAntonidas>();
@@ -154,7 +154,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that when a friendly minion is damaged, gain +1 armor
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Armorsmith()
         {
             var armorsmith = HearthEntityFactory.CreateCard<Armorsmith>();
@@ -179,7 +179,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that heals do damage instead
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AuchenaiSoulpriest()
         {
             var auchenai = HearthEntityFactory.CreateCard<AuchenaiSoulpriest>();
@@ -203,7 +203,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that heals do damage instead and that healing spells are affected by spell power
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AuchenaiSoulpriestWithSpellPower()
         {
             var auchenai = HearthEntityFactory.CreateCard<AuchenaiSoulpriest>();
@@ -228,7 +228,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// At end of turn, deal 2 damage to all other characters
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BaronGeddon()
         {
             var baron = HearthEntityFactory.CreateCard<BaronGeddon>();
@@ -254,7 +254,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Your minions trigger their deathrattles twice
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BaronRivendare()
         {
             var baron = HearthEntityFactory.CreateCard<BaronRivendare>();
@@ -287,7 +287,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// At end of turn, give another random friendly minion +1 health
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BloodImp()
         {
             var imp = HearthEntityFactory.CreateCard<BloodImp>();

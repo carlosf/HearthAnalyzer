@@ -7,19 +7,20 @@ using System.Threading.Tasks;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 using HearthAnalyzer.Core.Cards.Weapons;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using HearthAnalyzer.Core.Heroes;
 
+using NUnit.Framework;
+
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class BattlecryTests : BaseTestSuite
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -30,7 +31,7 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.GameState.CurrentPlayer = player;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
@@ -39,7 +40,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Give minion +2 attack
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AbusiveSergeant()
         {
             var sergeant = HearthEntityFactory.CreateCard<AbusiveSergeant>();
@@ -78,7 +79,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Destroy opponent's weapon
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AcidicSwampOoze()
         {
             var ooze = HearthEntityFactory.CreateCard<AcidicSwampOoze>();
@@ -101,7 +102,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Change an enemy minion's attack to 1
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AldorPeacekeeper()
         {
             var aldor = HearthEntityFactory.CreateCard<AldorPeacekeeper>();
@@ -120,7 +121,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Change a hero's health to 15
         /// </summary>
-        [TestMethod]
+        [Test]
         public void Alexstrasza()
         {
             var alex = HearthEntityFactory.CreateCard<Alexstrasza>();
@@ -140,7 +141,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Sends a friendly minion on the battlefield back to owner's hand
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AncientBrewmaster()
         {
             var brewmaster = HearthEntityFactory.CreateCard<AncientBrewmaster>();
@@ -203,7 +204,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Adjacent minions get +1 spell power
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AncientMage()
         {
             var ancientMage = HearthEntityFactory.CreateCard<AncientMage>();
@@ -228,7 +229,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify that null pointer is not being thrown
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AncientMageOnEmptyBoard() {
             var mage = HearthEntityFactory.CreateCard<AncientMage>();
             mage.Owner = player;
@@ -241,7 +242,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Equip a 2/2 battle axe
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ArathiWeaponsmith()
         {
             var weaponsmith = HearthEntityFactory.CreateCard<ArathiWeaponsmith>();
@@ -258,7 +259,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Give opponent a mana crystal
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ArcaneGolem()
         {
             var arcaneGolem = HearthEntityFactory.CreateCard<ArcaneGolem>();
@@ -276,7 +277,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Give a friendly minion divine shield
         /// </summary>
-        [TestMethod]
+        [Test]
         public void ArgentProtector()
         {
             var protector = HearthEntityFactory.CreateCard<ArgentProtector>();
@@ -295,7 +296,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Draw a card
         /// </summary>
-        [TestMethod]
+        [Test]
         public void AzureDrake()
         {
             var azureDrake = HearthEntityFactory.CreateCard<AzureDrake>();
@@ -311,7 +312,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Destroy a minion with 7 attack or more
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BigGameHunter()
         {
             var hunter = HearthEntityFactory.CreateCard<BigGameHunter>();
@@ -387,7 +388,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// All minions lose divine shield. Gain +3/3 for each divine shield lost.
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BloodKnight()
         {
             var bloodKnight = HearthEntityFactory.CreateCard<BloodKnight>();
@@ -421,7 +422,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Remove one durability from opponent's weapon
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BloodsailCorsairTest()
         {
             var bloodsail = HearthEntityFactory.CreateCard<BloodsailCorsair>();
@@ -452,7 +453,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Gain attack equal the attack of your weapon
         /// </summary>
-        [TestMethod]
+        [Test]
         public void BloodsailRaiderTest()
         {
             var raider = HearthEntityFactory.CreateCard<BloodsailRaider>();
@@ -471,7 +472,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Steals a minion with 2 or less attack
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CabalShadowPriest()
         {
             var cabal = HearthEntityFactory.CreateCard<CabalShadowPriest>();
@@ -580,7 +581,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Freeze a character
         /// </summary>
-        [TestMethod]
+        [Test]
         public void FrostElemental()
         {
             var frostElemental = HearthEntityFactory.CreateCard<FrostElemental>();
@@ -609,7 +610,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Deal 2 damage to a character
         /// </summary>
-        [TestMethod]
+        [Test]
         public void StormpikeCommando()
         {
             var commando = HearthEntityFactory.CreateCard<StormpikeCommando>();

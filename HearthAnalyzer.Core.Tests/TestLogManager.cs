@@ -10,8 +10,6 @@ using Common.Logging;
 using Common.Logging.Configuration;
 using Common.Logging.Simple;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace HearthAnalyzer.Core.Tests
 {
     public static class TestLogManager
@@ -47,8 +45,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Initialize the HearthAnalyzer.Core logger
         /// </summary>
-        /// <param name="context">The test context</param>
-        public static void Initialize(TestContext context)
+        public static void Initialize()
         {
             if (!_initialized)
             {
@@ -57,9 +54,7 @@ namespace HearthAnalyzer.Core.Tests
                     File.Delete(TestLogManager.TestOuputFileName);
                 }
 
-                TestLogManager.TestOuputFileName = Path.Combine(context.TestRunDirectory, "TestDebugOutput.txt");
                 HearthAnalyzer.Core.Logger.InitializeLogger(TestLogManager.Logger);
-                context.AddResultFile(TestOuputFileName);
 
                 _initialized = true;
             }

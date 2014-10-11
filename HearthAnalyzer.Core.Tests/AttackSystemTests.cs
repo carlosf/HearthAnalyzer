@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using HearthAnalyzer.Core.Cards.Weapons;
 using HearthAnalyzer.Core.Heroes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using HearthAnalyzer.Core;
 using HearthAnalyzer.Core.Cards;
 using HearthAnalyzer.Core.Cards.Minions;
 
+using NUnit.Framework;
+
 namespace HearthAnalyzer.Core.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class AttackSystemTests : BaseTestSuite
     {
         private BasePlayer player;
         private BasePlayer opponent;
 
-        [TestInitialize]
+        [SetUp]
         public void Setup()
         {
             player = HearthEntityFactory.CreatePlayer<Warlock>();
@@ -25,13 +25,13 @@ namespace HearthAnalyzer.Core.Tests
             GameEngine.Initialize(player, opponent, null, 0, player);
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             GameEngine.Uninitialize();
         }
 
-        [TestMethod]
+        [Test]
         public void BasicMinionsAttacking()
         {
             var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -57,7 +57,7 @@ namespace HearthAnalyzer.Core.Tests
             Assert.AreEqual(-2, raptor.CurrentHealth, "Verify Raptor_2 is at -2 health");
         }
 
-        [TestMethod]
+        [Test]
         public void BasicWeaponsAttacking()
         {
             var warAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
@@ -84,7 +84,7 @@ namespace HearthAnalyzer.Core.Tests
             Assert.IsTrue(player.Graveyard.Contains(warAxe), "Verify that the war axe is now in the graveyard");
         }
 
-        [TestMethod]
+        [Test]
         public void Gorehowl()
         {
             var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -122,7 +122,7 @@ namespace HearthAnalyzer.Core.Tests
             Assert.IsTrue(player.Graveyard.Contains(gorehowl));
         }
 
-        [TestMethod]
+        [Test]
         public void MinionsAttackingHero()
         {
             var yeti1 = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -138,7 +138,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify minions are exhausted after attacking
         /// </summary>
-        [TestMethod]
+        [Test]
         public void MinionExhaustion()
         {
             var yeti = HearthEntityFactory.CreateCard<ChillwindYeti>();
@@ -164,7 +164,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify the player gets exhausted after attacking
         /// </summary>
-        [TestMethod]
+        [Test]
         public void PlayerExhaustion()
         {
             var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
@@ -191,7 +191,7 @@ namespace HearthAnalyzer.Core.Tests
         /// <summary>
         /// Verify minions and players can't attack when they are frozen
         /// </summary>
-        [TestMethod]
+        [Test]
         public void CantAttackWhenFrozen()
         {
             var fieryWarAxe = HearthEntityFactory.CreateCard<FieryWarAxe>();
